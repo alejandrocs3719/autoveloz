@@ -3,13 +3,27 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // AÑADE ESTA LÍNEA ARRIBA DEL COMPONENTE
 
 const Signin = () => {
+  const router = useRouter(); // AÑADE ESTA LÍNEA DENTRO DEL COMPONENTE Signin
   const [data, setData] = useState({
     email: "",
     password: "",
   });
-
+  const handleSignin = () => {
+    const isAdmin = data.email === "admin" && data.password === "admin";
+  
+    localStorage.setItem("isLoggedIn", "true");
+  
+    if (isAdmin) {
+      localStorage.setItem("isAdmin", "true");
+    } else {
+      localStorage.removeItem("isAdmin");
+    }
+  
+    router.push("/");
+  };
   return (
     <>
       {/* <!-- ===== Inicio del Formulario de Inicio de Sesión ===== --> */}
@@ -183,6 +197,7 @@ const Signin = () => {
                 </div>
 
                 <button
+                  onClick={handleSignin}
                   aria-label="iniciar sesión con correo y contraseña"
                   className="inline-flex items-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark dark:hover:bg-blackho"
                 >

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import ThemeToggler from "./ThemeToggler";
-import menuData from "./menuData";
+import { userMenuData, adminMenuData } from "./menuData";
 
 const Header = () => {
   const [navigationOpen, setNavigationOpen] = useState(false);
@@ -13,7 +13,15 @@ const Header = () => {
   const [stickyMenu, setStickyMenu] = useState(false);
 
   const pathUrl = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
+  useEffect(() => {
+    const isAdminUser = localStorage.getItem("isAdmin") === "true";
+    const isLoggedInUser = localStorage.getItem("isLoggedIn") === "true";
+    setIsAdmin(isAdminUser);
+    setIsLoggedIn(isLoggedInUser);
+  }, []);
   // Sticky menu
   const handleStickyMenu = () => {
     if (window.scrollY >= 80) {
@@ -30,8 +38,8 @@ const Header = () => {
   return (
     <header
       className={`fixed left-1/2 top-0 z-99999 w-full transform -translate-x-1/2 py-7 ${stickyMenu
-          ? "bg-white !py-4 shadow transition duration-100 dark:bg-black"
-          : ""
+        ? "bg-white !py-4 shadow transition duration-100 dark:bg-black"
+        : ""
         }`}
     >
       <div className="relative mx-auto max-w-c-1390 items-center justify-between px-4 md:px-8 xl:flex 2xl:px-0 text-center">
@@ -97,7 +105,7 @@ const Header = () => {
         >
           <nav>
             <ul className="flex flex-col gap-5 xl:flex-row xl:items-center xl:gap-10">
-              {menuData.map((menuItem, key) => (
+              {(isAdmin ? adminMenuData : userMenuData).map((menuItem, key) => (
                 <li key={key} className={menuItem.submenu && "group relative"}>
                   {menuItem.submenu ? (
                     <>
@@ -147,21 +155,34 @@ const Header = () => {
           <div className="mt-7 flex items-center gap-6 xl:mt-0">
             <ThemeToggler />
 
-            {/* Botón de Login */}
-            <Link
-              href="/auth/signin"
-              className="text-regular font-medium text-waterloo hover:text-primary"
-            >
-              Login
-            </Link>
+            {isLoggedIn ? (
+              <button
+                onClick={() => {
+                  localStorage.removeItem("isLoggedIn");
+                  localStorage.removeItem("isAdmin");
+                  window.location.reload();
+                }}
+                className="flex items-center justify-center rounded-full bg-red-600 px-6 py-2.5 text-regular text-white duration-300 ease-in-out hover:bg-red-700"
+              >
+                Cerrar sesión
+              </button>
+            ) : (
+              <>
+                <Link
+                  href="/auth/signin"
+                  className="text-regular font-medium text-waterloo hover:text-primary"
+                >
+                  Login
+                </Link>
 
-            {/* Botón de Registro */}
-            <Link
-              href="/auth/signup"
-              className="flex items-center justify-center rounded-full bg-primary px-7.5 py-2.5 text-regular text-white duration-300 ease-in-out hover:bg-primaryho"
-            >
-              Registro
-            </Link>
+                <Link
+                  href="/auth/signup"
+                  className="flex items-center justify-center rounded-full bg-primary px-7.5 py-2.5 text-regular text-white duration-300 ease-in-out hover:bg-primaryho"
+                >
+                  Registro
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
