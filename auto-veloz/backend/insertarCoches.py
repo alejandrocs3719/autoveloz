@@ -63,10 +63,33 @@ class Coche:
             return None
 
 # Ejemplo de uso
-coche1 = Coche(matricula="1234ABC", categoria="SUV", marca="Toyota", modelo="RAV4", plazas=5, techo=True, marcha="automático", puertas=5, wifi=True, gps=True, silla_nino=False, cadenas=True)
-coche2 = Coche(matricula="4200EXX", categoria="SUV", marca="Hyundai", modelo="RAV4", plazas=5, techo=True, marcha="manual", puertas=5, wifi=True, gps=True, silla_nino=False, cadenas=True)
-coche1.guardar_en_db()
-coche2.guardar_en_db()
+coches = [
+    Coche("1234ABC", "SUV", "Toyota", "RAV4", 5, True, "automático", 5, True, True, False, True),
+    Coche("4200EXX", "SUV", "Hyundai", "Tucson", 5, True, "manual", 5, True, True, False, True),
+    Coche("5678DEF", "Sedán", "Honda", "Civic", 5, False, "automático", 4, True, True, True, False),
+    Coche("9101GHI", "Hatchback", "Ford", "Focus", 5, False, "manual", 4, False, True, False, False),
+    Coche("1122JKL", "Coupé", "BMW", "Serie 4", 4, True, "automático", 2, True, True, False, False),
+    Coche("3344MNO", "SUV", "Mercedes", "GLA", 5, True, "automático", 5, True, True, True, True),
+    Coche("5566PQR", "Pickup", "Chevrolet", "Silverado", 5, False, "manual", 4, False, True, False, True),
+    Coche("7788STU", "Sedán", "Audi", "A4", 5, True, "automático", 4, True, True, False, False),
+    Coche("9900VWX", "Convertible", "Mazda", "MX-5", 2, True, "manual", 2, False, False, False, False),
+    Coche("1111YYY", "SUV", "Nissan", "X-Trail", 7, True, "automático", 5, True, True, True, True),
+    Coche("2222ZZZ", "Hatchback", "Volkswagen", "Golf", 5, False, "manual", 4, True, False, True, False),
+    Coche("3333AAA", "Sedán", "Tesla", "Model S", 5, True, "automático", 4, True, True, True, False),
+    Coche("4444BBB", "SUV", "Jeep", "Wrangler", 4, False, "manual", 3, False, True, False, True),
+    Coche("5555CCC", "Minivan", "Kia", "Carnival", 7, True, "automático", 5, True, True, True, True),
+    Coche("6666DDD", "Pickup", "Ford", "F-150", 5, False, "automático", 4, False, True, False, True),
+    Coche("7777EEE", "Coupé", "Porsche", "911", 2, True, "automático", 2, True, True, False, False),
+    Coche("8888FFF", "Hatchback", "Toyota", "Yaris", 5, False, "manual", 4, False, False, True, False),
+    Coche("9999GGG", "Sedán", "Hyundai", "Elantra", 5, False, "automático", 4, True, True, False, False),
+    Coche("1010HHH", "SUV", "Subaru", "Forester", 5, True, "manual", 5, True, True, True, True),
+    Coche("2020III", "Convertible", "BMW", "Z4", 2, True, "automático", 2, True, False, False, False)
+]
+
+for coche in coches:
+    coche.guardar_en_db()
+    print(coche.mostrar_info())
+
 coche_recuperado = Coche.obtener_desde_db("4200EXX")
 if coche_recuperado:
     print(coche_recuperado.mostrar_info())
