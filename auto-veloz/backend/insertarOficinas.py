@@ -4,12 +4,6 @@ class Oficina:
     def __init__(nombre, direccion):
         self.nombre = nombre
         self.direccion = direccion
-        self.matriculas = [] # lista vacia
-
-    def __init__(nombre, direccion, matriculas):
-        self.nombre = nombre
-        self.direccion = direccion
-        self.matriculas = matriculas # lista con las matriculas de los coches en dicha oficina
         
 
     def mostrar_info(self):
@@ -27,11 +21,14 @@ class Oficina:
         cursor = conexion.cursor()
         cursor.execute(
             """
-            INSERT INTO oficinas (nombre, direccion, matriculas)
-            VALUES (%s, %s, %s)
-            ON CONFLICT (nombre) DO NOTHING
+            INSERT INTO oficina (nombre, direccion)
+            SELECT '%s', '%s'
+            WHERE NOT EXISTS (
+                SELECT 1 FROM oficina WHERE nombre = '%s'
+            );
+            
             """,
-            (self.nombre, self.direccion, self.matriculas)
+            (self.nombre, self.direccion, self.nombre)
         )
         conexion.commit()
         cursor.close()
@@ -47,7 +44,7 @@ class Oficina:
             port="5432"
         )
         cursor = conexion.cursor()
-        cursor.execute("SELECT * FROM oficinas WHERE nombre = %s", (nombre))
+        cursor.execute("SELECT * FROM oficina WHERE nombre = %s", (nombre))
         oficina_data = cursor.fetchone()
         cursor.close()
         conexion.close()
@@ -59,7 +56,7 @@ class Oficina:
 
 # Ejemplo de uso
 oficina1 = Oficina(nombre="Office01", direccion="Calle La calle, 10, Mostoles, Madrid")
-oficina2 = Oficina(nombre="Office02", direccion="Avenida La avenida, 20, Vallecas, Madrid", matriculas=["1234ABC", "4200EXX"])
+oficina2 = Oficina(nombre="Office02", direccion="Avenida La avenida, 20, Vallecas, Madrid")
 oficina1.guardar_en_db()
 oficina2.guardar_en_db()
 oficina_recuperada = Oficina.obtener_desde_db("Office01")
