@@ -21,14 +21,6 @@ class Oficina:
         cursor = conexion.cursor()
 
         cursor.execute(
-            # """
-            # INSERT INTO oficina (nombre, direccion)
-            # VALUES ('
-            # """
-            # + self.nombre + """', '""" + self.direccion + """') """ +
-            # """
-            # ON CONFLICT (nombre) DO NOTHING;
-            # """
             f"""
         DO $$  
         BEGIN
