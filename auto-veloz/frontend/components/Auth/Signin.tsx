@@ -6,24 +6,26 @@ import { useState } from "react";
 import { useRouter } from "next/navigation"; // AÑADE ESTA LÍNEA ARRIBA DEL COMPONENTE
 
 const Signin = () => {
-  const router = useRouter(); // AÑADE ESTA LÍNEA DENTRO DEL COMPONENTE Signin
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
-  const handleSignin = () => {
-    const isAdmin = data.email === "admin" && data.password === "admin";
-  
-    localStorage.setItem("isLoggedIn", "true");
-  
-    if (isAdmin) {
-      localStorage.setItem("isAdmin", "true");
-    } else {
-      localStorage.removeItem("isAdmin");
-    }
-  
-    router.push("/");
-  };
+    const router = useRouter(); // AÑADE ESTA LÍNEA DENTRO DEL COMPONENTE Signin
+    const [data, setData] = useState({
+      email: "",
+      password: "",
+    });
+    const handleSignin = () => {
+      const isAdmin = data.email === "admin" && data.password === "admin";
+    
+      if (isAdmin) {
+        localStorage.setItem("isAdmin", "true");
+        localStorage.setItem("isLoggedIn", "true");
+        
+        router.push("/admin/oficinas");
+
+      } else {
+        localStorage.removeItem("isAdmin");
+      }
+    
+      //router.push("/");
+    };
   return (
     <>
       {/* <!-- ===== Inicio del Formulario de Inicio de Sesión ===== --> */}

@@ -16,7 +16,9 @@ export default function OficinasPage() {
   const [oficinas, setOficinas] = useState(oficinasData.slice(0, 3));
   const [visibleCount, setVisibleCount] = useState(3);
   const [showPopup, setShowPopup] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [nuevaOficina, setNuevaOficina] = useState({ nombre: "", direccion: "" });
+  
 
   const handleLoadMore = () => {
     const next = oficinasData.slice(0, visibleCount + 3);
@@ -25,6 +27,16 @@ export default function OficinasPage() {
   };
 
   const handleAddOficina = () => {
+
+    if (
+      !nuevaOficina.nombre ||
+      !nuevaOficina.direccion 
+    ) {
+      setErrorMessage("Por favor, rellene todos los campos.");
+      return;
+    }
+
+
     const nuevaId = oficinasData.length + 1;
     const nueva = { id: nuevaId, ...nuevaOficina };
     oficinasData.push(nueva);
@@ -118,6 +130,10 @@ export default function OficinasPage() {
                 onChange={(e) => setNuevaOficina({ ...nuevaOficina, direccion: e.target.value })}
                 className="w-full mb-4 px-4 py-2 rounded-md border border-stroke dark:border-strokedark dark:bg-black dark:text-white"
               />
+
+              {errorMessage && (
+                <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
+              )}
 
               <div className="flex flex-col gap-4">
                 <button

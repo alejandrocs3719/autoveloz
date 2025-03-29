@@ -3,12 +3,19 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation"; // Importamos useSearchParams
+
 import { cars } from "@/app/(site)/coches/data/cars";
 
 const CarSearchPage = () => {
-  const [search, setSearch] = useState("");
+
+  const searchParams = useSearchParams();
+  const marcaSeleccionada = searchParams.get("marca"); // Obtener la marca desde la URL
+
+  const [search, setSearch] = useState(marcaSeleccionada || "");
   const [filteredCars, setFilteredCars] = useState(cars.slice(0, 5));
   const [visibleCount, setVisibleCount] = useState(5);
+
 
   useEffect(() => {
     const lower = search.toLowerCase();

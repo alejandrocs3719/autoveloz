@@ -37,7 +37,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed left-1/2 top-0 z-99999 w-full transform -translate-x-1/2 py-7 ${stickyMenu
+      className={`fixed left-1/2 top-0 z-100 w-full transform -translate-x-1/2 py-7 ${stickyMenu
         ? "bg-white !py-4 shadow transition duration-100 dark:bg-black"
         : ""
         }`}
@@ -160,7 +160,7 @@ const Header = () => {
                 onClick={() => {
                   localStorage.removeItem("isLoggedIn");
                   localStorage.removeItem("isAdmin");
-                  window.location.reload();
+                  window.location.href = "/";
                 }}
                 className="flex items-center justify-center rounded-full bg-red-600 px-6 py-2.5 text-regular text-white duration-300 ease-in-out hover:bg-red-700"
               >
