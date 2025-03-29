@@ -29,3 +29,7 @@ el .pem esta en el drive
 IMPORTAR psycog2 (Windows):
 
 pip install psycopg2-binary
+
+INICIAR FASTAPI (desde carpeta backend):
+
+uvicorn main.app --reload
