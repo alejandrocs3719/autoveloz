@@ -1,5 +1,6 @@
 import psycopg2
 
+
 class Oficina:
     def __init__(self, nombre, direccion):
         self.nombre = nombre
