@@ -1,7 +1,7 @@
 import psycopg2
 
 class Oficina:
-    def __init__(nombre, direccion):
+    def __init__(self, nombre, direccion):
         self.nombre = nombre
         self.direccion = direccion
         
@@ -19,21 +19,34 @@ class Oficina:
             port="5432"
         )
         cursor = conexion.cursor()
+
         cursor.execute(
+            # """
+            # INSERT INTO oficina (nombre, direccion)
+            # VALUES ('
+            # """
+            # + self.nombre + """', '""" + self.direccion + """') """ +
+            # """
+            # ON CONFLICT (nombre) DO NOTHING;
+            # """
+            f"""
+        DO $$  
+        BEGIN
+            IF (SELECT COUNT(*) FROM oficina WHERE nombre = '{self.nombre}') > 0 THEN
+                NULL;
+            ELSE
+                INSERT INTO oficina (nombre, direccion) 
+                VALUES ('{self.nombre}', '{self.direccion}');
+            END IF;
+        END $$;
             """
-            INSERT INTO oficina (nombre, direccion)
-            SELECT '%s', '%s'
-            WHERE NOT EXISTS (
-                SELECT 1 FROM oficina WHERE nombre = '%s'
-            );
-            
-            """,
-            (self.nombre, self.direccion, self.nombre)
+
         )
         conexion.commit()
         cursor.close()
         conexion.close()
 
+# TODO: darle una vuelta esta funcion para que se imprima bien
     @staticmethod
     def obtener_desde_db(nombre):
         conexion = psycopg2.connect(
@@ -44,7 +57,14 @@ class Oficina:
             port="5432"
         )
         cursor = conexion.cursor()
-        cursor.execute("SELECT * FROM oficina WHERE nombre = %s", (nombre))
+        cursor.execute(
+            """
+            SELECT * FROM oficina WHERE nombre = '
+            """
+            + nombre +
+            """
+            ';
+            """)
         oficina_data = cursor.fetchone()
         cursor.close()
         conexion.close()
@@ -55,10 +75,12 @@ class Oficina:
             return None
 
 # Ejemplo de uso
-oficina1 = Oficina(nombre="Office01", direccion="Calle La calle, 10, Mostoles, Madrid")
-oficina2 = Oficina(nombre="Office02", direccion="Avenida La avenida, 20, Vallecas, Madrid")
-oficina1.guardar_en_db()
-oficina2.guardar_en_db()
-oficina_recuperada = Oficina.obtener_desde_db("Office01")
-if oficina_recuperada:
-    print(oficina_recuperada.mostrar_info())
+# oficina1 = Oficina("Office03", "Calle La calle, 10, Mostoles, Madrid")
+# oficina2 = Oficina(nombre="Office02", direccion="Avenida La avenida, 20, Vallecas, Madrid")
+# oficina1.guardar_en_db()
+# oficina2.guardar_en_db()
+
+# oficina_recuperada = Oficina.obtener_desde_db("Office01")
+# if oficina_recuperada:
+#     print(oficina_recuperada.mostrar_info())
+
