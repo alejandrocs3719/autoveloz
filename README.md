@@ -1,6 +1,7 @@
 # autoveloz
 
 CONECTAR BASE DE DATOS:
+
 Punto de enlace
 blablacardb.cjucoqgasy0s.eu-north-1.rds.amazonaws.com
 
@@ -26,5 +27,5 @@ el .pem esta en el drive
 
 
 IMPORTAR psycog2 (Windows):
-setx PATH "%PATH%;C:\Python\Scripts"
-pip3 install psycopg2
+
+pip install psycopg2-binary
