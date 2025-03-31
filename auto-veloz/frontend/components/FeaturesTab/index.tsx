@@ -3,7 +3,6 @@ import Image from "next/image";
 import { useState } from "react";
 import FeaturesTabItem from "./FeaturesTabItem";
 import featuresTabData from "./featuresTabData";
-
 import { motion } from "framer-motion";
 
 const FeaturesTab = () => {
@@ -32,15 +31,8 @@ const FeaturesTab = () => {
           {/* <!-- Tab Menues Start --> */}
           <motion.div
             variants={{
-              hidden: {
-                opacity: 0,
-                y: -20,
-              },
-
-              visible: {
-                opacity: 1,
-                y: 0,
-              },
+              hidden: { opacity: 0, y: -20 },
+              visible: { opacity: 1, y: 0 },
             }}
             initial="hidden"
             whileInView="visible"
@@ -48,6 +40,7 @@ const FeaturesTab = () => {
             viewport={{ once: true }}
             className="animate_top mb-15 flex flex-wrap justify-center rounded-[10px] border border-stroke bg-white shadow-solid-5 dark:border-strokedark dark:bg-blacksection dark:shadow-solid-6 md:flex-nowrap md:items-center lg:gap-7.5 xl:mb-21.5 xl:gap-12.5"
           >
+            {/* Paso 1: Elegir el coche */}
             <div
               onClick={() => setCurrentTab("tabOne")}
               className={`relative flex w-full cursor-pointer items-center gap-4 border-b border-stroke px-6 py-2 last:border-0 dark:border-strokedark md:w-auto md:border-0 xl:px-13.5 xl:py-5 ${
@@ -63,10 +56,12 @@ const FeaturesTab = () => {
               </div>
               <div className="md:w-3/5 lg:w-auto">
                 <button className="text-sm font-medium text-black dark:text-white xl:text-regular">
-                  Clean User Interface
+                  Elige el coche que mejor te convenga
                 </button>
               </div>
             </div>
+
+            {/* Paso 2: Añadir extras */}
             <div
               onClick={() => setCurrentTab("tabTwo")}
               className={`relative flex w-full cursor-pointer items-center gap-4 border-b border-stroke px-6 py-2 last:border-0 dark:border-strokedark md:w-auto md:border-0 xl:px-13.5 xl:py-5 ${
@@ -82,10 +77,12 @@ const FeaturesTab = () => {
               </div>
               <div className="md:w-3/5 lg:w-auto">
                 <button className="text-sm font-medium text-black dark:text-white xl:text-regular">
-                  Essential Business Pages
+                  Añade todos los extras que necesites
                 </button>
               </div>
             </div>
+
+            {/* Paso 3: Seleccionar fecha y pago */}
             <div
               onClick={() => setCurrentTab("tabThree")}
               className={`relative flex w-full cursor-pointer items-center gap-4 border-b border-stroke px-6 py-2 last:border-0 dark:border-strokedark md:w-auto md:border-0 xl:px-13.5 xl:py-5 ${
@@ -101,7 +98,7 @@ const FeaturesTab = () => {
               </div>
               <div className="md:w-3/5 lg:w-auto">
                 <button className="text-sm font-medium text-black dark:text-white xl:text-regular">
-                  Fully Functional Integrations
+                  Elige fecha y paga al devolver el coche
                 </button>
               </div>
             </div>
@@ -111,15 +108,8 @@ const FeaturesTab = () => {
           {/* <!-- Tab Content Start --> */}
           <motion.div
             variants={{
-              hidden: {
-                opacity: 0,
-                y: -20,
-              },
-
-              visible: {
-                opacity: 1,
-                y: 0,
-              },
+              hidden: { opacity: 0, y: -20 },
+              visible: { opacity: 1, y: 0 },
             }}
             initial="hidden"
             whileInView="visible"
