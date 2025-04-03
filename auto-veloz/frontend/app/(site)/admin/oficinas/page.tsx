@@ -1,26 +1,29 @@
-// app/admin/oficinas/page.tsx
 "use client";
 
-import { useState } from "react";
-
-// Datos simulados en frontend
-let oficinasData = [
-  { id: 1, nombre: "Oficina Central", direccion: "Calle Mayor 1, Madrid" },
-  { id: 2, nombre: "Sucursal Norte", direccion: "Avenida del Norte 23, Bilbao" },
-  { id: 3, nombre: "Oficina Este", direccion: "Calle del Mar 45, Valencia" },
-  { id: 4, nombre: "Delegación Sur", direccion: "Calle Sol 99, Sevilla" },
-  { id: 5, nombre: "Centro Logístico", direccion: "Polígono Sur, Zaragoza" },
-];
+import { useEffect, useState } from "react";
 
 export default function OficinasPage() {
+  const [oficinas, setOficinas] = useState<{ id: number; nombre: string; direccion: string }[]>([]);
   const [visibleCount, setVisibleCount] = useState(3);
   const [showPopup, setShowPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [nuevaOficina, setNuevaOficina] = useState({ nombre: "", direccion: "" });
   const [busqueda, setBusqueda] = useState("");
 
+  // ⚡ Obtener oficinas desde el backend
+  useEffect(() => {
+    fetch("http://13.48.84.201:8000/getOficinas/")
+      .then((res) => res.json())
+      .then((data) => {
+        setOficinas(data);
+      })
+      .catch((err) => {
+        console.error("Error al cargar oficinas:", err);
+      });
+  }, []);
+
   const handleLoadMore = () => {
-    setVisibleCount(prev => prev + 3);
+    setVisibleCount((prev) => prev + 3);
   };
 
   const handleAddOficina = () => {
@@ -29,9 +32,9 @@ export default function OficinasPage() {
       return;
     }
 
-    const nuevaId = oficinasData.length + 1;
+    const nuevaId = oficinas.length + 1;
     const nueva = { id: nuevaId, ...nuevaOficina };
-    oficinasData.push(nueva);
+    setOficinas([...oficinas, nueva]);
     setNuevaOficina({ nombre: "", direccion: "" });
     setShowPopup(false);
   };
@@ -44,20 +47,21 @@ export default function OficinasPage() {
     reader.onload = (event) => {
       const text = event.target?.result as string;
       const lines = text.split("\n").filter(Boolean);
+      const nuevasOficinas = [...oficinas];
       for (let line of lines) {
         const [nombre, direccion] = line.split(",");
         if (nombre && direccion) {
-          const nuevaId = oficinasData.length + 1;
-          const nueva = { id: nuevaId, nombre: nombre.trim(), direccion: direccion.trim() };
-          oficinasData.push(nueva);
+          const nuevaId = nuevasOficinas.length + 1;
+          nuevasOficinas.push({ id: nuevaId, nombre: nombre.trim(), direccion: direccion.trim() });
         }
       }
+      setOficinas(nuevasOficinas);
       setShowPopup(false);
     };
     reader.readAsText(file);
   };
 
-  const oficinasFiltradas = oficinasData.filter((oficina) =>
+  const oficinasFiltradas = oficinas.filter((oficina) =>
     oficina.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
     oficina.direccion.toLowerCase().includes(busqueda.toLowerCase())
   );
