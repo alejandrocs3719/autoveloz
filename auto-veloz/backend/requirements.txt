@@ -1,0 +1,4 @@
+tapi
+uvicorn
+asyncpg
+python-dotenv
