@@ -1,7 +1,7 @@
 // app/admin/oficinas/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Datos simulados en frontend
 let oficinasData = [
@@ -13,34 +13,25 @@ let oficinasData = [
 ];
 
 export default function OficinasPage() {
-  const [oficinas, setOficinas] = useState(oficinasData.slice(0, 3));
   const [visibleCount, setVisibleCount] = useState(3);
   const [showPopup, setShowPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [nuevaOficina, setNuevaOficina] = useState({ nombre: "", direccion: "" });
-  
+  const [busqueda, setBusqueda] = useState("");
 
   const handleLoadMore = () => {
-    const next = oficinasData.slice(0, visibleCount + 3);
-    setOficinas(next);
     setVisibleCount(prev => prev + 3);
   };
 
   const handleAddOficina = () => {
-
-    if (
-      !nuevaOficina.nombre ||
-      !nuevaOficina.direccion 
-    ) {
+    if (!nuevaOficina.nombre || !nuevaOficina.direccion) {
       setErrorMessage("Por favor, rellene todos los campos.");
       return;
     }
 
-
     const nuevaId = oficinasData.length + 1;
     const nueva = { id: nuevaId, ...nuevaOficina };
     oficinasData.push(nueva);
-    setOficinas(oficinasData.slice(0, visibleCount + 1));
     setNuevaOficina({ nombre: "", direccion: "" });
     setShowPopup(false);
   };
@@ -61,16 +52,28 @@ export default function OficinasPage() {
           oficinasData.push(nueva);
         }
       }
-      setOficinas(oficinasData.slice(0, visibleCount + 3));
       setShowPopup(false);
     };
     reader.readAsText(file);
   };
 
+  const oficinasFiltradas = oficinasData.filter((oficina) =>
+    oficina.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+    oficina.direccion.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-white dark:bg-blacksection px-4 pt-32 pb-10 md:px-10">
       <div className="mx-auto max-w-4xl">
         <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">Oficinas Disponibles</h1>
+
+        <input
+          type="text"
+          placeholder="Buscar por nombre o dirección..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          className="mb-6 px-4 py-2 w-full rounded-md border border-stroke dark:border-strokedark dark:bg-black dark:text-white"
+        />
 
         <table className="w-full border-collapse border border-gray-300 dark:border-gray-700">
           <thead className="bg-gray-100 dark:bg-gray-800">
@@ -81,7 +84,7 @@ export default function OficinasPage() {
             </tr>
           </thead>
           <tbody>
-            {oficinas.map((oficina) => (
+            {oficinasFiltradas.slice(0, visibleCount).map((oficina) => (
               <tr key={oficina.id}>
                 <td className="border border-gray-300 dark:border-gray-700 px-4 py-2">{oficina.id}</td>
                 <td className="border border-gray-300 dark:border-gray-700 px-4 py-2">{oficina.nombre}</td>
@@ -91,7 +94,7 @@ export default function OficinasPage() {
           </tbody>
         </table>
 
-        {visibleCount < oficinasData.length && (
+        {visibleCount < oficinasFiltradas.length && (
           <div className="mt-6 text-center">
             <button
               onClick={handleLoadMore}

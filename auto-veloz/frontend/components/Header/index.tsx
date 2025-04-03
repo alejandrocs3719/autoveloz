@@ -16,11 +16,28 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  const logoHref = isAdmin ? "/admin/estadisticas" : "/";
+
   useEffect(() => {
-    const isAdminUser = localStorage.getItem("isAdmin") === "true";
-    const isLoggedInUser = localStorage.getItem("isLoggedIn") === "true";
-    setIsAdmin(isAdminUser);
-    setIsLoggedIn(isLoggedInUser);
+    const checkAuth = () => {
+      const isAdminUser = localStorage.getItem("isAdmin") === "true";
+      const isLoggedInUser = localStorage.getItem("isLoggedIn") === "true";
+      setIsAdmin(isAdminUser);
+      setIsLoggedIn(isLoggedInUser);
+    };
+  
+    checkAuth(); // ejecuta al montar
+  
+    // escucha cambios en localStorage desde otras pestañas o manualmente
+    window.addEventListener("storage", checkAuth);
+  
+    // opcional: también al foco (por si el usuario vuelve a esta pestaña)
+    window.addEventListener("focus", checkAuth);
+  
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("focus", checkAuth);
+    };
   }, []);
   // Sticky menu
   const handleStickyMenu = () => {
@@ -44,7 +61,7 @@ const Header = () => {
     >
       <div className="relative mx-auto max-w-c-1390 items-center justify-between px-4 md:px-8 xl:flex 2xl:px-0 text-center">
         <div className="flex w-full items-center justify-between xl:w-1/4">
-          <a href="/">
+          <a href={logoHref}>
             <Image
               src="/images/logo/logo-negro.png"
               alt="logo"
