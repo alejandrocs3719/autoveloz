@@ -1,5 +1,5 @@
 import React from "react";
-import { Feature } from "@/types/Marca";
+import { Feature } from "@/types/marca";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
