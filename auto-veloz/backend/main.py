@@ -4,7 +4,12 @@ from insertarOficinas import Oficina, obtener_oficinas
 
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(root_path="/api")
+app = FastAPI(
+    root_path="/api",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
+)
 
 app.add_middleware(
     CORSMiddleware,
