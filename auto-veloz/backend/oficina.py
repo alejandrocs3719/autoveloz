@@ -63,9 +63,9 @@ class Oficina:
         cursor.close()
         conexion.close()
 
-lista_oficinas = obtener_oficinas()
-for oficina in lista_oficinas:
-    print(oficina.mostrar_info())
+# lista_oficinas = obtener_oficinas()
+# for oficina in lista_oficinas:
+#     print(oficina.mostrar_info())
 
 
 # Ejemplo de uso
