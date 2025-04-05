@@ -12,7 +12,7 @@ def obtener_oficinas():
     cursor = conexion.cursor()
     cursor.execute(
         """
-        SELECT nombre, direccion FROM oficina;
+        SELECT * FROM oficina;
         """
     )
     oficina_data = cursor.fetchall()
@@ -26,7 +26,8 @@ def obtener_oficinas():
 
 
 class Oficina:
-    def __init__(self, nombre, direccion):
+    def __init__(self, id, nombre, direccion):
+        self.id = id
         self.nombre = nombre
         self.direccion = direccion
 
@@ -62,6 +63,31 @@ class Oficina:
         conexion.commit()
         cursor.close()
         conexion.close()
+        self.id = self._get_id()
+
+    def _get_id(self):
+        conexion = psycopg2.connect(
+            dbname="postgres",
+            user="postgres",
+            password="DhYae8vU820ZZec7AW5S",
+            host="blablacardb.cjucoqgasy0s.eu-north-1.rds.amazonaws.com",
+            port="5432"
+        )
+        cursor = conexion.cursor()
+        cursor.execute(
+            """
+            SELECT id FROM oficina WHERE nombre = "
+            """
+            + self.nombre +
+            """
+            " AND direccion = "
+            """
+            + self.direccion
+        )
+        id_oficina = cursor.fetchone()
+        cursor.close()
+        conexion.close()
+        return id_oficina
 
 # lista_oficinas = obtener_oficinas()
 # for oficina in lista_oficinas:
