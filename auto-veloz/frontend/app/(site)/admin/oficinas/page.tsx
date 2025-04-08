@@ -12,9 +12,10 @@ export default function OficinasPage() {
 
   // ⚡ Obtener oficinas desde el backend
   useEffect(() => {
-    fetch("http://13.48.84.201:8000/getOficinas/")
+    fetch("http://13.48.84.201:8000/api/getOficinas")
       .then((res) => res.json())
       .then((data) => {
+        console.log("Datos recibidos:", data);
         setOficinas(data);
       })
       .catch((err) => {
@@ -31,12 +32,29 @@ export default function OficinasPage() {
       setErrorMessage("Por favor, rellene todos los campos.");
       return;
     }
-
-    const nuevaId = oficinas.length + 1;
-    const nueva = { id: nuevaId, ...nuevaOficina };
-    setOficinas([...oficinas, nueva]);
-    setNuevaOficina({ nombre: "", direccion: "" });
-    setShowPopup(false);
+  
+    fetch("http://13.48.84.201:8000/api/putOficina", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(nuevaOficina),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Error en la respuesta del servidor.");
+        return res.json();
+      })
+      .then((data) => {
+        // Puedes asumir que el backend devuelve la oficina creada, incluyendo su ID
+        setOficinas([...oficinas, data]);
+        setNuevaOficina({ nombre: "", direccion: "" });
+        setShowPopup(false);
+        setErrorMessage("");
+      })
+      .catch((err) => {
+        console.error("Error al guardar la oficina:", err);
+        setErrorMessage("Hubo un error al guardar la oficina.");
+      });
   };
 
   const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
