@@ -23,7 +23,7 @@ Estamos aplicando control de configuración como dice el tema 3 de la asignatura
   Aquí están las **líneas base del ciclo 1 (`v1.0_Ciclo1`) y ciclo 2 (`v2.0_Ciclo2`)**.
 
 - `dev`:  
-  Aquí trabajamos todos en el código que está en desarrollo. Todo lo nuevo se hace sobre esta rama.
+  Aquí trabajamos todos en el código que está en desarrollo. Todo lo nuevo se hace sobre esta rama, mediante mergeo de los tipos de ramas siguientes.
 
 - `feat/XX_descripcion`:  
   Nueva funcionalidad. Ej: `feat/US02_insertar_coches`  
