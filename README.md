@@ -2,7 +2,7 @@
 
 # 📦 REPOSITORIO GPI – Gestión de Configuración
 
-Este repositorio forma parte del proyecto de Gpi del equipo 3 – Blablacar de alquiler de coches.  
+Este repositorio forma parte del proyecto de Gpi del equipo 3
 Aquí se gestiona el desarrollo de código, documentación y entregas del sistema.
 
 ---
