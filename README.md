@@ -97,10 +97,5 @@ Estamos aplicando control de configuración como dice el tema 3 de la asignatura
 
 ## 🧰 Recursos útiles
 
-- `VERSION.txt` → contiene la versión actual activa
 - `/4_CONFIGURACION/Formularios_PC` → para registrar cambios importantes
 - `README_Linea_Base_*` → documentación de cada línea base
-
----
-
-Si tienes dudas sobre Git, ramas, versiones o control de cambios, pregunta al responsable de configuración (Alejandro).
