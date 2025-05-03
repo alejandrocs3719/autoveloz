@@ -30,8 +30,8 @@ Estamos aplicando control de configuración como dice el tema 3 de la asignatura
   Donde `XX` es el ID de la historia de usuario (US), si aplica.
 
 - `fix/BUG_descripcion`:  
-  Corrección de error. Ej: `fix/BUG01_filtro_oficinas`  
-  Donde `BUGxx` identifica errores detectados.
+  Corrección de error. Ej: `fix/BUG01_filtro_oficinas_US01`  
+  Donde `BUGxx` identifica errores detectados. Recomendable poner la US relacionada para mayor trazabilidad.
 
 - `docs/DOC_descripcion`:  
   Cambios en documentación. Ej: `docs/DOC01_actualizar_readme`
