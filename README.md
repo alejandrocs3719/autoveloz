@@ -64,7 +64,7 @@ Estamos aplicando control de configuración como dice el tema 3 de la asignatura
    git push origin feat/US05_buscador_coches
    ```
 
-5. Ve a GitHub y haz clic en **"Compare & pull request"** para crear un PR hacia `dev`.
+5. Ve a GitHub y haz clic en **"Compare & pull request"** desde tu rama para crear un PR hacia `dev`.
 
 ---
 
