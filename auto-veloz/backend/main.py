@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from datetime import datetime
 from oficina import Oficina, obtener_oficinas
 from coche import Coche
+from calculadorPrecio import calcular_precio
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -23,6 +25,27 @@ app.add_middleware(
 class OficinaRequest(BaseModel):
     nombre: str
     direccion: str
+
+class CocheEnXOficinaRequest(BaseModel):
+    marca             : str
+    modelo            : str
+    wifi              : bool   
+    gps               : bool   
+    silla_nino        : bool   
+    cadenas           : bool
+
+
+class PrecioCocheRequest(BaseModel):
+    marca             : str
+    modelo            : str
+    wifi              : bool   
+    gps               : bool   
+    silla_nino        : bool   
+    cadenas           : bool
+    fecha_inicio      : datetime
+    fecha_fin         : datetime
+    id_oficina_actual : int 
+
 
 class CocheRequest(BaseModel):
     matricula         : str
@@ -104,6 +127,35 @@ def get_extras_coche(req : ExtraCocheRequest):
                     resp[attr].add(getattr(coche, attr))
 
     return resp
+
+
+#Jaime
+
+@app.post("/getOficinaCoche")
+def mostrar_oficinas_coche(req: CocheEnXOficinaRequest):
+    lista_oficinas = Coche.coche_en_X_oficina(req)
+    # for oficina in lista_oficinas:
+    #     print(oficina.mostrar_info())
+    return lista_oficinas
+
+
+@app.post("/getPrecio")
+def mostrar_precio(req: PrecioCocheRequest):
+    
+    class Precio(BaseModel):
+        precio  : float
+    
+    
+    
+    precio_fin = calcular_precio(req)
+    # for oficina in lista_oficinas:
+    #     print(oficina.mostrar_info())
+    
+    mi_Precio =Precio(precio=precio_fin)
+    
+    return mi_Precio
+
+#FIN Jaime
 
 from fastapi import Request
 

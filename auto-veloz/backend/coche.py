@@ -114,24 +114,24 @@ class Coche:
         cursor = conexion.cursor()
         cursor.execute( #TODO poner req.marca
             """
-            SELECT *
+            SELECT id_oficina_actual
             FROM vehiculo
-            WHERE marca = %(marca)s
-            AND modelo = %(modelo)s
-            AND wifi = %(wifi)s
-            AND gps = %(gps)s
-            AND silla_nino = %(silla_nino)s
-            AND cadenas = %(cadenas)s;
-            """
+            WHERE marca = %s
+            AND modelo = %s
+            AND wifi = %s
+            AND gps = %s
+            AND silla_nino = %s
+            AND cadenas = %s;
+            """, (req.marca, req.modelo, req.wifi, req.gps, req.silla_nino, req.cadenas)
         )
         coche_data = cursor.fetchall()
         cursor.close()
         conexion.close()
 
         if coche_data:
-            for coche in coche_data:
+            for oficina in coche_data:
                 
-                oficinas_set.add(Coche(**coche).id_oficina_actual)
+                oficinas_set.add(oficina[0])
             
             resultado = OficinasEnLaQueEsta(oficina=list(oficinas_set))
             

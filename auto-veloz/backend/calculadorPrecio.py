@@ -14,10 +14,8 @@ class PrecioCocheRequest(BaseModel):
     id_oficina_actual : int 
 
 
-def calcular_dias(fecha_inicio, fecha_fin):
-    inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d")
-    fin = datetime.strptime(fecha_fin, "%Y-%m-%d")
-    return (fin - inicio).days + 1
+def calcular_dias(fecha_inicio: datetime, fecha_fin: datetime) -> int:
+    return (fecha_fin.date() - fecha_inicio.date()).days + 1
 
 # Repite la clase con gama incluida solo para este script
 def calcular_precio(req: PrecioCocheRequest):
@@ -33,31 +31,39 @@ def calcular_precio(req: PrecioCocheRequest):
     cursor = conexion.cursor()
 
     
-    cursor.execute(cursor.execute(
+    cursor.execute(
             """
             SELECT tarifa.precio
             FROM vehiculo
             JOIN tarifa ON vehiculo.id_vehiculo = tarifa.id_vehiculo
-            WHERE vehiculo.marca = %(marca)s
-            AND vehiculo.modelo = %(modelo)s
-            AND vehiculo.wifi = %(wifi)s
-            AND vehiculo.gps = %(gps)s
-            AND vehiculo.silla_nino = %(silla_nino)s
-            AND vehiculo.cadenas = %(cadenas)s
-            AND vehiculo.id_oficina_actual = %(id_oficina_actual)s
+            WHERE vehiculo.marca = %s
+            AND vehiculo.modelo = %s
+            AND vehiculo.wifi = %s
+            AND vehiculo.gps = %s
+            AND vehiculo.silla_nino = %s
+            AND vehiculo.cadenas = %s
+            AND vehiculo.id_oficina_actual = %s
             ORDER BY tarifa.precio ASC
             LIMIT 1;
 
 
 
-            """
-        ))
+            """, (req.marca, req.modelo, req.wifi, req.gps, req.silla_nino, req.cadenas, req.id_oficina_actual)
+        )
     
-    precio_dia = cursor.fetchone()
+    precio_dia = cursor.fetchone()[0]
     cursor.close()
     conexion.close()
     
+    print("\n\n\n\n\n")
+    print(precio_dia)
+    print("\n\n\n\n\n")
     duracion_dias = calcular_dias(req.fecha_inicio, req.fecha_fin)
+    
+    print("\n\n\n\n\n")
+    print(duracion_dias)
+    print("\n\n\n\n\n")
+
     
     precio_fin = -1
     
@@ -70,59 +76,10 @@ def calcular_precio(req: PrecioCocheRequest):
     
     # Por el momeneto la única tarifa disponible es la de por dia
     
-    
+        
+    print("\n\n\n\n\n")
+    print(precio_fin)
+    print("\n\n\n\n\n")
 
     
     return precio_fin
-    """
-    Calcula el precio total del alquiler del coche.
-    
-    Parámetros:
-        tipo_tarifa (str): Tipo de tarifa ('por día', 'por km', 'ilimitado', 'fin de semana', 'mensual').
-        duracion_dias (int): Número de días de alquiler (cuando aplica).
-        distancia_km (float): Distancia recorrida (cuando aplica).
-        extras (list): Lista de extras seleccionados, por ejemplo: ['silla', 'internet'].
-    
-    Retorna:
-        float: Precio total en euros.
-    """
-
-    # Tarifas base (en euros)
-    tarifas = {
-        'por día': 30.0,
-        'por km': 0.50,
-        'ilimitado': 100.0,
-        'fin de semana': 70.0,
-        'mensual': 600.0
-    }
-
-    # Costos de extras (en euros)
-    costo_extras = {
-        'silla': 5.0,
-        'internet': 10.0
-    }
-
-    precio_base = 0.0
-    duracion_dias = calcular_dias(fecha_inicio, fecha_fin)
-    if tipo_tarifa == 'por día':
-        precio_base = tarifas[tipo_tarifa] * duracion_dias
-    elif tipo_tarifa == 'por km':
-        precio_base = tarifas[tipo_tarifa] * distancia_km
-    elif tipo_tarifa == 'ilimitado':
-        precio_base = tarifas[tipo_tarifa]
-    elif tipo_tarifa == 'fin de semana':
-        precio_base = tarifas[tipo_tarifa]
-    elif tipo_tarifa == 'mensual':
-        precio_base = tarifas[tipo_tarifa]
-    else:
-        raise ValueError("Tipo de tarifa no válido.")
-
-    # Cálculo de extras
-    total_extras = sum(costo_extras[extra] for extra in (extras or []) if extra in costo_extras)
-
-    precio_total = precio_base + total_extras
-    return round(precio_total, 2)
-
-# Ejemplo de uso
-precio = calcular_precio('por día', duracion_dias=3, extras=['silla', 'internet'])
-print(f"Precio total: €{precio}")
