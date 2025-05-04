@@ -1,4 +1,20 @@
 import psycopg2
+from pydantic import BaseModel
+from typing import List
+
+
+class CocheEnXOficinaRequest(BaseModel):
+    marca             : str
+    modelo            : str
+    wifi              : bool   
+    gps               : bool   
+    silla_nino        : bool   
+    cadenas           : bool
+
+
+class OficinasEnLaQueEsta(BaseModel):
+    oficina: List[int]
+
 
 class Coche:
     def __init__(self, matricula, categoria, marca, modelo, plazas, techo, marcha, puertas, wifi, gps, silla_nino, cadenas, id_oficina_actual):
@@ -81,6 +97,49 @@ class Coche:
 
         return coche            
 
+    
+    
+    
+    def coche_en_X_oficina(req: CocheEnXOficinaRequest):
+        conexion = psycopg2.connect(
+            dbname="postgres",
+            user="postgres",
+            password="DhYae8vU820ZZec7AW5S",
+            host="blablacardb.cjucoqgasy0s.eu-north-1.rds.amazonaws.com",
+            port="5432"
+        )
+        
+        oficinas_set = set()
+        
+        cursor = conexion.cursor()
+        cursor.execute( #TODO poner req.marca
+            """
+            SELECT *
+            FROM vehiculo
+            WHERE marca = %(marca)s
+            AND modelo = %(modelo)s
+            AND wifi = %(wifi)s
+            AND gps = %(gps)s
+            AND silla_nino = %(silla_nino)s
+            AND cadenas = %(cadenas)s;
+            """
+        )
+        coche_data = cursor.fetchall()
+        cursor.close()
+        conexion.close()
+
+        if coche_data:
+            for coche in coche_data:
+                
+                oficinas_set.add(Coche(**coche).id_oficina_actual)
+            
+            resultado = OficinasEnLaQueEsta(oficina=list(oficinas_set))
+            
+        else:
+            resultado = None
+    
+        return resultado
+    
 
 # Ejemplo de uso
 # coches = [
