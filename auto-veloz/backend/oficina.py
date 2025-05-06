@@ -1,4 +1,5 @@
 import psycopg2
+from pydantic import BaseModel
 
 
 def obtener_oficinas():
@@ -23,6 +24,9 @@ def obtener_oficinas():
         return [Oficina(*oficina) for oficina in oficina_data]
     else:
         return None
+
+
+
 
 
 class Oficina:
