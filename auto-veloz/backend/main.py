@@ -4,6 +4,8 @@ from datetime import datetime
 from oficina import Oficina, obtener_oficinas
 from coche import Coche
 from calculadorPrecio import calcular_precio
+from cliente import Cliente, obtener_clientes
+from enum import Enum
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -25,6 +27,17 @@ app.add_middleware(
 class OficinaRequest(BaseModel):
     nombre: str
     direccion: str
+
+class TipoCliente(str, Enum):
+    negocio = 'negocio'
+    particular = 'particular'
+    administrador = 'administrador'
+class ClienteRequest(BaseModel):
+    nombre: str
+    dni: str
+    fecha_nacimiento: datetime
+    correo: str
+    tipo_cliente: TipoCliente
 
 class CocheEnXOficinaRequest(BaseModel):
     marca             : str
@@ -70,7 +83,7 @@ class ExtraCocheRequest(BaseModel):
 def crear_oficina(oficina: OficinaRequest):
     nueva_oficina = Oficina(0, oficina.nombre, oficina.direccion)
     nueva_oficina.guardar_oficina()  # Llamamos a la función para guardar en la BD
-    return {"mensaje": "Oficina añadida correctamente", "id":oficina.id, "nombre": oficina.nombre, "direccion": oficina.direccion}
+    return {"mensaje": "Oficina añadida correctamente", "id": oficina.id, "nombre": oficina.nombre, "direccion": oficina.direccion}
 
 
 @app.get("/getOficinas")
@@ -79,6 +92,17 @@ def mostrar_oficinas():
     # for oficina in lista_oficinas:
     #     print(oficina.mostrar_info())
     return lista_oficinas
+
+@app.post("/putCliente")
+def crear_cliente(cliente: ClienteRequest):
+    nuevo_cliente = Cliente(0, cliente.nombre, cliente.dni, cliente.fecha_nacimiento, cliente.correo, cliente.tipo_cliente)
+    nuevo_cliente.guardar_cliente()  # Llamamos a la función para guardar en la BD
+    return {"mensaje": "Oficina añadida correctamente", "id": cliente.id, "nombre": cliente.nombre, "dni": cliente.dni}
+
+@app.get("/getClientes")
+def mostrar_clientes():
+    lista_clientes = obtener_clientes()
+    return lista_clientes
 
 @app.post("/putCoches")
 def crear_coche(coche : CocheRequest):

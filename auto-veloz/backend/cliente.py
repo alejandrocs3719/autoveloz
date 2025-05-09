@@ -1,6 +1,6 @@
 import psycopg2
 
-def obtener_oficinas():
+def obtener_clientes():
     conexion = psycopg2.connect(
         dbname="postgres",
         user="postgres",
@@ -11,34 +11,35 @@ def obtener_oficinas():
     cursor = conexion.cursor()
     cursor.execute(
         """
-        SELECT * FROM oficina;
+        SELECT * FROM cliente;
         """
     )
-    oficina_data = cursor.fetchall()
+    cliente_data = cursor.fetchall()
     cursor.close()
     conexion.close()
 
-    if oficina_data:
-        return [Oficina(*oficina) for oficina in oficina_data]
+    if cliente_data:
+        return [Cliente(*cliente) for cliente in cliente_data]
     else:
         return None
 
 
 
-
-
-class Oficina:
-    def __init__(self, id, nombre, direccion):
+class Cliente:
+    def __init__(self, id, nombre, dni, fecha_nacimiento, correo, tipo_cliente):
         self.id = id
         self.nombre = nombre
-        self.direccion = direccion
+        self.dni = dni
+        self.fecha_nacimiento = fecha_nacimiento
+        self.correo = correo
+        self.tipo_cliente = tipo_cliente
 
 
     def mostrar_info(self):
-        return f"Nombre: {self.nombre}, Dirección: {self.direccion}" \
+        return f"Nombre: {self.nombre}, Dni: {self.dni}"
 
 
-    def guardar_oficina(self):
+    def guardar_cliente(self):
         conexion = psycopg2.connect(
             dbname="postgres",
             user="postgres",
@@ -52,11 +53,11 @@ class Oficina:
             f"""
         DO $$
         BEGIN
-            IF (SELECT COUNT(*) FROM oficina WHERE nombre = '{self.nombre}') > 0 THEN
+            IF (SELECT COUNT(*) FROM cliente WHERE dni = '{self.dni}') > 0 THEN
                 NULL;
             ELSE
-                INSERT INTO oficina (nombre, direccion)
-                VALUES ('{self.nombre}', '{self.direccion}');
+                INSERT INTO cliente (nombre, dni, fecha_nacimiento, correo, tipo_cliente)
+                VALUES ('{self.nombre}', '{self.dni}', '{self.fecha_nacimiento}', '{self.correo}', '{self.tipo_cliente}');
             END IF;
         END $$;
             """
@@ -78,31 +79,17 @@ class Oficina:
         cursor = conexion.cursor()
         cursor.execute(
             """
-            SELECT id FROM oficina WHERE nombre = "
+            SELECT id FROM cliente WHERE dni = "
             """
-            + self.nombre +
-            """
-            " AND direccion = "
-            """
-            + self.direccion
+            + self.dni
         )
-        id_oficina = cursor.fetchone()
+        id_cliente = cursor.fetchone()
         cursor.close()
         conexion.close()
-        return id_oficina
-
-# lista_oficinas = obtener_oficinas()
-# for oficina in lista_oficinas:
-#     print(oficina.mostrar_info())
+        return id_cliente
 
 
-# Ejemplo de uso
-# oficina1 = Oficina("Office03", "Calle La calle, 10, Mostoles, Madrid")
-# oficina2 = Oficina(nombre="Office02", direccion="Avenida La avenida, 20, Vallecas, Madrid")
-# oficina1.guardar_en_db()
-# oficina2.guardar_en_db()
 
-# oficina_recuperada = Oficina.obtener_desde_db("Office01")
-# if oficina_recuperada:
-#     print(oficina_recuperada.mostrar_info())
+
+
 
