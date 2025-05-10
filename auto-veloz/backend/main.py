@@ -5,6 +5,7 @@ from oficina import Oficina, obtener_oficinas
 from coche import Coche
 from calculadorPrecio import calcular_precio
 from reservador import crear_reserva
+from typing import Any
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -124,7 +125,9 @@ def get_coches():
     resp : dict[str, list[list[str]]] = {"coches" : []}
 
     for coche in coches:
-        resp["coches"].append([coche.marca, coche.modelo])
+        to_append : list = [coche.marca, coche.modelo]
+        if to_append not in resp["coches"]:
+            resp["coches"].append(to_append)
     
     return resp
 
@@ -144,6 +147,22 @@ def get_extras_coche(req : ExtraCocheRequest):
             for attr in CocheRequest.model_fields.keys():
                 if attr != "marca" and attr != "modelo":
                     resp[attr].add(getattr(coche, attr))
+
+    return resp
+
+@app.post("/getCochesConExtras")
+def get_coches_con_extras(req : ExtraCocheRequest):
+    coches : list[Coche] | None = Coche.obtener_desde_db(None)
+
+    resp : list[dict[Any]] = []
+
+    coche_counter : int = 0
+    for coche in coches:
+        if coche.marca == req.marca and coche.modelo == req.modelo:
+            coche_serialized : dict[Any] = {}
+            for attr in CocheRequest.model_fields.keys():
+                coche_serialized[attr] = getattr(coche, attr)
+            resp.append(coche_serialized) 
 
     return resp
 
