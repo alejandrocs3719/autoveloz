@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from datetime import datetime
-from .oficina import Oficina, obtener_oficinas
-from .coche import Coche
-from .calculadorPrecio import calcular_precio
+from oficina import Oficina, obtener_oficinas
+from coche import Coche
+from calculadorPrecio import calcular_precio
+from reservador import crear_reserva
 from typing import Any
-
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -62,6 +62,25 @@ class CocheRequest(BaseModel):
     silla_nino        : bool   
     cadenas           : bool
     id_oficina_actual : int 
+
+
+class CrearReservaRequest(BaseModel):
+    marca             : str
+    modelo            : str
+    wifi              : bool   
+    gps               : bool   
+    silla_nino        : bool   
+    cadenas           : bool
+    correo             : str
+    id_oficina_origen  : int  
+    id_oficina_destino : int  
+    fecha_inicio       : datetime
+    fecha_fin          : datetime
+    tarjeta_credito    : str
+    precio_total       : float
+
+
+
 
 class ExtraCocheRequest(BaseModel):
     marca  : str
@@ -173,6 +192,19 @@ def mostrar_precio(req: PrecioCocheRequest):
     mi_Precio =Precio(precio=precio_fin)
     
     return mi_Precio
+
+
+@app.post("/crearReserva")
+def crear_reservaa(reserva: CrearReservaRequest):
+    datos = crear_reserva(reserva)
+    
+    class CrearReservaRequestDoy(BaseModel):
+        id_cliente : int
+        id_vehiculo : int
+    
+    datos_bueno = CrearReservaRequestDoy(id_cliente = datos[0], id_vehiculo=datos[1])
+    return {"mensaje": "Reserva añadida correctamente", "id_cliente":datos_bueno.id_cliente, "id_vehiculo": datos_bueno.id_vehiculo}
+
 
 #FIN Jaime
 
