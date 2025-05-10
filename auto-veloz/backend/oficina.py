@@ -1,6 +1,4 @@
 import psycopg2
-from pydantic import BaseModel
-
 
 def obtener_oficinas():
     conexion = psycopg2.connect(
@@ -79,14 +77,9 @@ class Oficina:
         )
         cursor = conexion.cursor()
         cursor.execute(
+            f"""
+            SELECT id_oficina FROM oficina WHERE nombre = '{self.nombre}' AND direccion = '{self.direccion}'
             """
-            SELECT id FROM oficina WHERE nombre = "
-            """
-            + self.nombre +
-            """
-            " AND direccion = "
-            """
-            + self.direccion
         )
         id_oficina = cursor.fetchone()
         cursor.close()

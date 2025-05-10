@@ -1,9 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from datetime import datetime
 from oficina import Oficina, obtener_oficinas
 from coche import Coche
 from calculadorPrecio import calcular_precio
+from cliente import Cliente, obtener_clientes, obtener_cliente, TipoCliente
+import re
 from reservador import crear_reserva
 from typing import Any
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,6 +28,19 @@ app.add_middleware(
 class OficinaRequest(BaseModel):
     nombre: str
     direccion: str
+
+
+class ClienteRequest(BaseModel):
+    nombre: str
+    dni: str
+    fecha_nacimiento: datetime
+    correo: str
+    tipo_usuario: TipoCliente
+    contrasena: str
+
+class ClienteLoginEntrada(BaseModel):
+    correo: str
+    contrasena: str
 
 class CocheEnXOficinaRequest(BaseModel):
     marca             : str
@@ -90,7 +105,7 @@ class ExtraCocheRequest(BaseModel):
 def crear_oficina(oficina: OficinaRequest):
     nueva_oficina = Oficina(0, oficina.nombre, oficina.direccion)
     nueva_oficina.guardar_oficina()  # Llamamos a la función para guardar en la BD
-    return {"mensaje": "Oficina añadida correctamente", "id":oficina.id, "nombre": oficina.nombre, "direccion": oficina.direccion}
+    return {"mensaje": "Oficina añadida correctamente", "nombre": oficina.nombre, "direccion": oficina.direccion}
 
 
 @app.get("/getOficinas")
@@ -99,6 +114,40 @@ def mostrar_oficinas():
     # for oficina in lista_oficinas:
     #     print(oficina.mostrar_info())
     return lista_oficinas
+
+# Regex para validar DNI y correo
+DNI_REGEX = r'^\d{8}[A-Za-z]$'
+EMAIL_REGEX = r'^[^@\s]+@[^@\s]+\.[^@\s]+$'
+
+@app.post("/register")
+def register(cliente: ClienteRequest):
+    # Validar formato del DNI
+    if not re.match(DNI_REGEX, cliente.dni):
+        raise HTTPException(status_code=400, detail="DNI inválido. Debe tener 8 números seguidos de una letra.")
+
+    # Validar formato del correo electrónico
+    if not re.match(EMAIL_REGEX, cliente.correo):
+        raise HTTPException(status_code=400, detail="Correo electrónico inválido.")
+
+    # Crear y guardar cliente
+    nuevo_cliente = Cliente(0, cliente.nombre, cliente.dni, cliente.fecha_nacimiento, cliente.correo, cliente.tipo_usuario, cliente.contrasena)
+    nuevo_cliente.guardar_cliente()
+
+    return {
+        "mensaje": "Cliente añadido correctamente",
+        "id": nuevo_cliente.id,
+        "nombre": nuevo_cliente.nombre,
+        "dni": nuevo_cliente.dni
+    }
+@app.post("/login")
+def login(cliente: ClienteLoginEntrada):
+    cliente_logeado = obtener_cliente(cliente.correo, cliente.contrasena)
+    return cliente_logeado
+
+@app.get("/getClientes")
+def mostrar_clientes():
+    lista_clientes = obtener_clientes()
+    return lista_clientes
 
 @app.post("/putCoches")
 def crear_coche(coche : CocheRequest):
