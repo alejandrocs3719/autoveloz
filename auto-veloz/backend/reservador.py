@@ -71,7 +71,7 @@ def crear_reserva(req: CrearReservaRequest):
     
     id_cliente =  cursor.fetchone()[0]
     
-    id_reserva = random.randint(1, 10000)
+    #id_reserva = random.randint(1, 10000)
     #print("\n\n Aqui va el id\n\n ")
     #print(id_reserva)
     
@@ -81,11 +81,11 @@ def crear_reserva(req: CrearReservaRequest):
     
     cursor.execute(
             """
-            INSERT INTO reserva (id_reserva, id_vehiculo,  id_cliente, id_oficina_origen, id_oficina_destino, fecha_inicio, fecha_fin, tarjeta_credito, precio_total)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO reserva (id_vehiculo,  id_cliente, id_oficina_origen, id_oficina_destino, fecha_inicio, fecha_fin, tarjeta_credito, precio_total)
+            VALUES ( %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (id_reserva) DO NOTHING
             """,
-            ( id_reserva ,id_vehiculo, id_cliente, req.id_oficina_origen, req.id_oficina_destino, req.fecha_inicio, req.fecha_fin, req.tarjeta_credito, req.precio_total)
+            ( id_vehiculo, id_cliente, req.id_oficina_origen, req.id_oficina_destino, req.fecha_inicio, req.fecha_fin, req.tarjeta_credito, req.precio_total)
     )
     
     conexion.commit()
