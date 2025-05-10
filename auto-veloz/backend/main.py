@@ -6,7 +6,8 @@ from coche import Coche
 from calculadorPrecio import calcular_precio
 from cliente import Cliente, obtener_clientes, obtener_cliente, TipoCliente
 import re
-
+from reservador import crear_reserva
+from typing import Any
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -76,6 +77,25 @@ class CocheRequest(BaseModel):
     silla_nino        : bool   
     cadenas           : bool
     id_oficina_actual : int 
+
+
+class CrearReservaRequest(BaseModel):
+    marca             : str
+    modelo            : str
+    wifi              : bool   
+    gps               : bool   
+    silla_nino        : bool   
+    cadenas           : bool
+    correo             : str
+    id_oficina_origen  : int  
+    id_oficina_destino : int  
+    fecha_inicio       : datetime
+    fecha_fin          : datetime
+    tarjeta_credito    : str
+    precio_total       : float
+
+
+
 
 class ExtraCocheRequest(BaseModel):
     marca  : str
@@ -154,7 +174,9 @@ def get_coches():
     resp : dict[str, list[list[str]]] = {"coches" : []}
 
     for coche in coches:
-        resp["coches"].append([coche.marca, coche.modelo])
+        to_append : list = [coche.marca, coche.modelo]
+        if to_append not in resp["coches"]:
+            resp["coches"].append(to_append)
     
     return resp
 
@@ -174,6 +196,22 @@ def get_extras_coche(req : ExtraCocheRequest):
             for attr in CocheRequest.model_fields.keys():
                 if attr != "marca" and attr != "modelo":
                     resp[attr].add(getattr(coche, attr))
+
+    return resp
+
+@app.post("/getCochesConExtras")
+def get_coches_con_extras(req : ExtraCocheRequest):
+    coches : list[Coche] | None = Coche.obtener_desde_db(None)
+
+    resp : list[dict[Any]] = []
+
+    coche_counter : int = 0
+    for coche in coches:
+        if coche.marca == req.marca and coche.modelo == req.modelo:
+            coche_serialized : dict[Any] = {}
+            for attr in CocheRequest.model_fields.keys():
+                coche_serialized[attr] = getattr(coche, attr)
+            resp.append(coche_serialized) 
 
     return resp
 
@@ -203,6 +241,19 @@ def mostrar_precio(req: PrecioCocheRequest):
     mi_Precio =Precio(precio=precio_fin)
     
     return mi_Precio
+
+
+@app.post("/crearReserva")
+def crear_reservaa(reserva: CrearReservaRequest):
+    datos = crear_reserva(reserva)
+    
+    class CrearReservaRequestDoy(BaseModel):
+        id_cliente : int
+        id_vehiculo : int
+    
+    datos_bueno = CrearReservaRequestDoy(id_cliente = datos[0], id_vehiculo=datos[1])
+    return {"mensaje": "Reserva añadida correctamente", "id_cliente":datos_bueno.id_cliente, "id_vehiculo": datos_bueno.id_vehiculo}
+
 
 #FIN Jaime
 
