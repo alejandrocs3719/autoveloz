@@ -30,9 +30,9 @@ export const userMenuData: Menu[] = [
 export const adminMenuData: Menu[] = [
   {
     id: 1,
-    title: "Estadísticas",
+    title: "Gestión de Usuarios",
     newTab: false,
-    path: "/admin/estadisticas",
+    path: "/admin/usuarios",
   },
   {
     id: 2,
