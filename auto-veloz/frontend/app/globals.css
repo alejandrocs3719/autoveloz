@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 /* third-party libraries CSS */
+/* Asegura que el datepicker flote por encima del mapa */
+.react-datepicker-popper {
+  z-index: 1000 !important;
+}
 
 .testimonial-01 .swiper-pagination-bullet {
   @apply h-2.5 w-2.5 bg-stroke opacity-100;

@@ -46,7 +46,7 @@ const Footer = () => {
                 </a>
 
                 <p className="mb-10 mt-5">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              © 2025 Autoveloz. Reserva tu coche ideal de forma rápida, cómoda y segura. Todos los derechos reservados.
                 </p>
 
                 <p className="mb-1.5 text-sectiontitle uppercase tracking-[5px]">
@@ -199,7 +199,7 @@ const Footer = () => {
                     Newsletter
                   </h4>
                   <p className="mb-4 w-[90%]">
-                    Subscribe to receive future updates
+                    Suscríbete a nuestro boletín y mantente al tanto.
                   </p>
 
                   <form action="#">
@@ -301,7 +301,7 @@ const Footer = () => {
               className="animate_top"
             >
               <p>
-                &copy; {new Date().getFullYear()} Solid. All rights reserved
+                &copy; {new Date().getFullYear()} AutoVeloz. All rights reserved
               </p>
             </motion.div>
 
